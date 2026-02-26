@@ -22,6 +22,7 @@ final class LiveMonitoringAPI: MonitoringAPI {
         }
         guard let url = components?.url else { throw URLError(.badURL) }
         let request = try makeRequest(url: url)
+        logRequest(label: "summary", request: request)
         let (data, response) = try await session.data(for: request)
         logResponse(label: "summary", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<MonitorSummaryData>.self, from: data)
@@ -35,6 +36,7 @@ final class LiveMonitoringAPI: MonitoringAPI {
     func fetchCenters() async throws -> [CenterInfo] {
         let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/centers")
         let request = try makeRequest(url: url)
+        logRequest(label: "centers", request: request)
         let (data, response) = try await session.data(for: request)
         logResponse(label: "centers", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<[CenterInfo]>.self, from: data)
@@ -67,6 +69,12 @@ final class LiveMonitoringAPI: MonitoringAPI {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         return request
+    }
+
+    private func logRequest(label: String, request: URLRequest) {
+        let url = request.url?.absoluteString ?? "<no-url>"
+        let hasToken = request.value(forHTTPHeaderField: "Authorization") != nil
+        NSLog("[MonitoringAPI] %@ request url=%@ auth=%@", label, url, hasToken ? "yes" : "no")
     }
 
     private func logResponse(label: String, response: URLResponse, data: Data) {
