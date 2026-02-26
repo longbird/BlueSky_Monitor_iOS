@@ -59,5 +59,4 @@ struct ChartSection: View {
         }
         return 100.1
     }
-    }
 }
