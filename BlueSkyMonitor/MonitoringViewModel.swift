@@ -6,7 +6,8 @@ final class MonitoringViewModel: ObservableObject {
     @Published var centers: [CenterInfo] = []
     @Published var selectedCenterId: String = ""
     @Published var centerSearchText: String = ""
-    @Published var chartSeries: [String: [ChartPoint]] = [:]
+    @Published var chartSeries: [String: [ChartValuePoint]] = [:]
+    @Published var chartMinutes: Int = 60
     @Published var isLoading = false
     @Published var isUserInteracting = false
     @Published var errorMessage: String?
@@ -41,6 +42,13 @@ final class MonitoringViewModel: ObservableObject {
     }
 
     func load() async {
+        if selectedCenterId.isEmpty {
+            items = []
+            errorMessage = nil
+            NSLog("[MonitoringVM] load skipped (no center)")
+            return
+        }
+
         isLoading = true
         defer { isLoading = false }
         errorMessage = nil
@@ -56,26 +64,21 @@ final class MonitoringViewModel: ObservableObject {
         }
     }
 
-    func loadCharts(range: String = "1h") async {
+    func loadCharts() async {
         guard !selectedCenterId.isEmpty else {
             chartSeries = [:]
             return
         }
 
-        let metrics = ["cpu", "mem", "disk", "rx", "tx"]
         do {
-            async let cpu = api.fetchChart(centerId: selectedCenterId, metric: "cpu", range: range)
-            async let mem = api.fetchChart(centerId: selectedCenterId, metric: "mem", range: range)
-            async let disk = api.fetchChart(centerId: selectedCenterId, metric: "disk", range: range)
-            async let rx = api.fetchChart(centerId: selectedCenterId, metric: "rx", range: range)
-            async let tx = api.fetchChart(centerId: selectedCenterId, metric: "tx", range: range)
-
-            let results = try await [cpu, mem, disk, rx, tx]
-            var nextSeries: [String: [ChartPoint]] = [:]
-            for (index, metric) in metrics.enumerated() {
-                nextSeries[metric] = results[index].points
-            }
-            chartSeries = nextSeries
+            let data = try await api.fetchChart(centerId: selectedCenterId, minutes: chartMinutes)
+            chartSeries = [
+                "cpu": data.points.map { ChartValuePoint(t: $0.t, v: $0.cpu) },
+                "mem": data.points.map { ChartValuePoint(t: $0.t, v: $0.mem) },
+                "disk": data.points.map { ChartValuePoint(t: $0.t, v: $0.disk) },
+                "rx": data.points.map { ChartValuePoint(t: $0.t, v: $0.rx) },
+                "tx": data.points.map { ChartValuePoint(t: $0.t, v: $0.tx) }
+            ]
         } catch {
             NSLog("[MonitoringVM] chart error=%@", String(describing: error))
         }
