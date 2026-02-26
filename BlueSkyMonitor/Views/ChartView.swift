@@ -19,13 +19,16 @@ struct MultiLineChartView: View {
             GeometryReader { proxy in
                 ZStack {
                     if let latest = latestTimestamp {
-                        let windowStart = latest.addingTimeInterval(-windowSeconds)
+                        let earliest = earliestTimestamp ?? latest
+                        let span = max(1, latest.timeIntervalSince(earliest))
+                        let effectiveWindow = min(windowSeconds, span)
+                        let windowStart = latest.addingTimeInterval(-effectiveWindow)
                         ForEach(series) { item in
                             LineShape(
                                 points: item.points,
                                 scale: item.scale,
                                 windowStart: windowStart,
-                                windowSeconds: windowSeconds,
+                                windowSeconds: effectiveWindow,
                                 maxPoints: maxPoints,
                                 yMax: item.yMax
                             )
@@ -58,6 +61,13 @@ struct MultiLineChartView: View {
             .flatMap { $0.points }
             .map { $0.t }
             .max()
+    }
+
+    private var earliestTimestamp: Date? {
+        series
+            .flatMap { $0.points }
+            .map { $0.t }
+            .min()
     }
 }
 
