@@ -5,19 +5,23 @@ struct MultiLineChartView: View {
         let id: String
         let name: String
         let color: Color
-        let points: [ChartPoint]
-        let scale: (Double) -> Double
+        let points: [ChartValuePoint]
+        let scale: @Sendable (Double) -> Double
     }
 
     let series: [Series]
+    let windowSeconds: TimeInterval
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             GeometryReader { proxy in
                 ZStack {
-                    ForEach(series) { item in
-                        LineShape(points: item.points, scale: item.scale)
-                            .stroke(item.color, lineWidth: 2)
+                    if let latest = latestTimestamp {
+                        let windowStart = latest.addingTimeInterval(-windowSeconds)
+                        ForEach(series) { item in
+                            LineShape(points: item.points, scale: item.scale, windowStart: windowStart, windowSeconds: windowSeconds)
+                                .stroke(item.color, lineWidth: 2)
+                        }
                     }
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height)
@@ -39,15 +43,29 @@ struct MultiLineChartView: View {
             }
         }
     }
+
+    private var latestTimestamp: Date? {
+        series
+            .flatMap { $0.points }
+            .map { $0.t }
+            .max()
+    }
 }
 
 private struct LineShape: Shape {
-    let points: [ChartPoint]
-    let scale: (Double) -> Double
+    let points: [ChartValuePoint]
+    let scale: @Sendable (Double) -> Double
+    let windowStart: Date
+    let windowSeconds: TimeInterval
 
     func path(in rect: CGRect) -> Path {
-        guard points.count > 1 else { return Path() }
-        let values = points.map { scale($0.v) }
+        let filtered = points
+            .filter { $0.t >= windowStart }
+            .sorted { $0.t < $1.t }
+
+        guard filtered.count > 1 else { return Path() }
+
+        let values = filtered.map { scale($0.v) }
         let minV = values.min() ?? 0
         let maxV = values.max() ?? 1
         let range = max(maxV - minV, 0.0001)
@@ -57,11 +75,16 @@ private struct LineShape: Shape {
             return rect.height * (1 - normalized)
         }
 
-        let stepX = rect.width / CGFloat(max(points.count - 1, 1))
+        func xPosition(_ date: Date) -> CGFloat {
+            let delta = date.timeIntervalSince(windowStart)
+            let progress = max(0, min(1, delta / windowSeconds))
+            return rect.width * progress
+        }
+
         var path = Path()
-        for (index, value) in values.enumerated() {
-            let x = CGFloat(index) * stepX
-            let y = yPosition(value)
+        for (index, point) in filtered.enumerated() {
+            let x = xPosition(point.t)
+            let y = yPosition(scale(point.v))
             if index == 0 {
                 path.move(to: CGPoint(x: x, y: y))
             } else {

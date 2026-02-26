@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChartSection: View {
-    let chartSeries: [String: [ChartPoint]]
+    let chartSeries: [String: [ChartValuePoint]]
 
     private let colors: [String: Color] = [
         "cpu": .red,
@@ -22,9 +22,9 @@ struct ChartSection: View {
     var body: some View {
         let series = buildSeries()
         VStack(alignment: .leading, spacing: 8) {
-            Text("차트 (1시간)")
+            Text("차트 (30분)")
                 .font(.headline)
-            MultiLineChartView(series: series)
+            MultiLineChartView(series: series, windowSeconds: 30 * 60)
         }
         .padding(.horizontal)
     }

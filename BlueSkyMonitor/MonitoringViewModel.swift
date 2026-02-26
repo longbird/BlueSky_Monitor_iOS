@@ -7,7 +7,7 @@ final class MonitoringViewModel: ObservableObject {
     @Published var selectedCenterId: String = ""
     @Published var centerSearchText: String = ""
     @Published var chartSeries: [String: [ChartValuePoint]] = [:]
-    @Published var chartMinutes: Int = 60
+    @Published var chartMinutes: Int = 30
     @Published var isLoading = false
     @Published var isUserInteracting = false
     @Published var errorMessage: String?
