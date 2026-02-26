@@ -18,6 +18,8 @@ struct LoginView: View {
                 SecureField("비밀번호", text: $viewModel.mgrPwd)
                     .textFieldStyle(.roundedBorder)
 
+                Toggle("아이디/비밀번호 저장", isOn: $viewModel.rememberCredentials)
+
                 if let message = viewModel.errorMessage {
                     Text(message)
                         .foregroundColor(.red)
