@@ -4,7 +4,6 @@ struct ContentView: View {
     @StateObject private var viewModel = MonitoringViewModel(api: LiveMonitoringAPI())
     @StateObject private var tokenStore = TokenStore.shared
 
-    @State private var didForceLogin = false
     @State private var pendingAction: PBXAction?
     @State private var resultMessage: String = ""
     @State private var showResultAlert = false
@@ -131,11 +130,6 @@ struct ContentView: View {
                     updateSheet
                 }
             }
-        }
-        .task {
-            guard !didForceLogin else { return }
-            didForceLogin = true
-            tokenStore.clear()
         }
     }
 
