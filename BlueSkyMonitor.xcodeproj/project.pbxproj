@@ -10,8 +10,10 @@
 		292D5AABDA1AB7F5A070EFFD /* MonitorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */; };
 		37851218398AEAD044C42589 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C0ED969BC47AE40487844E /* Config.swift */; };
 		42C3FF3C439678AFAA04D1FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3CECD749CEB631ED8A0A7 /* ContentView.swift */; };
+		43E48B74CD935BD06B085C8C /* ChartSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CD480EA2E37A4C58E507EA /* ChartSection.swift */; };
 		6302577B934537123A5102DA /* JSONDecoder+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */; };
 		6D6423241D7D93D58FB70E20 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */; };
+		76CE17C4CC1EED6DFE3CC2B8 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89598BFEBE4294BC8FA3160B /* ChartView.swift */; };
 		77CE2652F3682AF935B8A57A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA6BFDB7FE6EE2ED90A3DD /* LoginView.swift */; };
 		8AFE5AB64412B082E5548EEE /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDAB23259F07E7692CDF62 /* TokenStore.swift */; };
 		939DC14143F1252C2395ABD5 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77C1229C3A517B7656A01D9 /* AuthModels.swift */; };
@@ -35,12 +37,14 @@
 		48DF0CC01E6AAD500BFDA706 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		6B6EEB31D7044D563D4684EF /* MonitorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorRowView.swift; sourceTree = "<group>"; };
 		786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorDetailView.swift; sourceTree = "<group>"; };
+		89598BFEBE4294BC8FA3160B /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		970D49DE3AF19CA46BE0E44E /* MonitoringDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringDetailViewModel.swift; sourceTree = "<group>"; };
 		9F9EE4E1B24DDCC6482923B7 /* BlueSkyMonitorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueSkyMonitorApp.swift; sourceTree = "<group>"; };
 		AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Date.swift"; sourceTree = "<group>"; };
 		C77C1229C3A517B7656A01D9 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		D767BC8D348D8581FF4E2BFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D9DE5B73137437873DF60E6B /* BlueSkyMonitor.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlueSkyMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5CD480EA2E37A4C58E507EA /* ChartSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSection.swift; sourceTree = "<group>"; };
 		E6FFCB2E113E972ACA10C0E2 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,6 +60,8 @@
 		2987F21540DDA113E5C6BF06 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E5CD480EA2E37A4C58E507EA /* ChartSection.swift */,
+				89598BFEBE4294BC8FA3160B /* ChartView.swift */,
 				04CA6BFDB7FE6EE2ED90A3DD /* LoginView.swift */,
 				786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */,
 				6B6EEB31D7044D563D4684EF /* MonitorRowView.swift */,
@@ -150,6 +156,8 @@
 				939DC14143F1252C2395ABD5 /* AuthModels.swift in Sources */,
 				C75907205F76B6F983A5DBAF /* AuthViewModel.swift in Sources */,
 				F3E2CF2AFF8023A7A8F6AA21 /* BlueSkyMonitorApp.swift in Sources */,
+				43E48B74CD935BD06B085C8C /* ChartSection.swift in Sources */,
+				76CE17C4CC1EED6DFE3CC2B8 /* ChartView.swift in Sources */,
 				37851218398AEAD044C42589 /* Config.swift in Sources */,
 				42C3FF3C439678AFAA04D1FC /* ContentView.swift in Sources */,
 				6302577B934537123A5102DA /* JSONDecoder+Date.swift in Sources */,

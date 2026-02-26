@@ -29,6 +29,11 @@ struct ContentView: View {
                                 ProgressView("불러오는 중...")
                             } else {
                                 ScrollView {
+                                    if !viewModel.chartSeries.isEmpty {
+                                        ChartSection(chartSeries: viewModel.chartSeries)
+                                            .padding(.vertical, 4)
+                                    }
+
                                     LazyVStack(spacing: 12) {
                                         ForEach(viewModel.items) { item in
                                             NavigationLink(destination: MonitorDetailView(item: item)) {
@@ -71,13 +76,22 @@ struct ContentView: View {
                     guard tokenStore.accessToken != nil else { return }
                     await viewModel.loadCenters()
                     await viewModel.load()
+                    await viewModel.loadCharts()
+                    viewModel.startAutoRefresh(intervalSeconds: 3.0)
                 }
                 .onChange(of: viewModel.selectedCenterId) { _ in
-                    Task { await viewModel.load() }
+                    Task {
+                        await viewModel.load()
+                        await viewModel.loadCharts()
+                    }
                 }
                 .refreshable {
                     guard tokenStore.accessToken != nil else { return }
                     await viewModel.load()
+                    await viewModel.loadCharts()
+                }
+                .onDisappear {
+                    viewModel.stopAutoRefresh()
                 }
             }
         }

@@ -37,6 +37,16 @@ struct MonitorDetailData: Codable {
     let records: [MonitorDetailRecord]
 }
 
+struct ChartResponseData: Codable {
+    let metric: String
+    let points: [ChartPoint]
+}
+
+struct ChartPoint: Codable {
+    let t: Date
+    let v: Double
+}
+
 struct MonitorDetailRecord: Codable, Identifiable {
     var id: Int { seq }
     let seq: Int

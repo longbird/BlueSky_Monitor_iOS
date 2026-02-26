@@ -4,6 +4,7 @@ protocol MonitoringAPI {
     func fetchSummary(centerId: String?) async throws -> MonitorSummaryData
     func fetchCenters() async throws -> [CenterInfo]
     func fetchDetail(centerId: String) async throws -> MonitorDetailData
+    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData
 }
 
 final class LiveMonitoringAPI: MonitoringAPI {
@@ -52,11 +53,32 @@ final class LiveMonitoringAPI: MonitoringAPI {
         components?.queryItems = [URLQueryItem(name: "centerId", value: centerId)]
         guard let url = components?.url else { throw URLError(.badURL) }
         let request = try makeRequest(url: url)
+        logRequest(label: "detail", request: request)
         let (data, response) = try await session.data(for: request)
         logResponse(label: "detail", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<MonitorDetailData>.self, from: data)
         guard wrapped.success, let payload = wrapped.data else {
             let message = wrapped.message ?? "상세 불러오기 실패"
+            throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
+        return payload
+    }
+
+    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData {
+        var components = URLComponents(url: AppConfig.baseURL.appendingPathComponent("api/v1/monitor/chart"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "centerId", value: centerId),
+            URLQueryItem(name: "metric", value: metric),
+            URLQueryItem(name: "range", value: range)
+        ]
+        guard let url = components?.url else { throw URLError(.badURL) }
+        let request = try makeRequest(url: url)
+        logRequest(label: "chart", request: request)
+        let (data, response) = try await session.data(for: request)
+        logResponse(label: "chart", response: response, data: data)
+        let wrapped = try decoder.decode(APIResponse<ChartResponseData>.self, from: data)
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "차트 불러오기 실패"
             throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
         }
         return payload
@@ -110,5 +132,12 @@ final class MockMonitoringAPI: MonitoringAPI {
                 MonitorDetailRecord(seq: 2, centerId: centerId, cpu: 20.5, mem: 58.2, disk: 81.0, rxBytes: 223_456, txBytes: 754_321)
             ]
         )
+    }
+
+    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData {
+        let points = Array((0..<12).map { idx in
+            ChartPoint(t: Date().addingTimeInterval(Double(-idx) * 300), v: Double.random(in: 10...80))
+        }.reversed())
+        return ChartResponseData(metric: metric, points: points)
     }
 }
