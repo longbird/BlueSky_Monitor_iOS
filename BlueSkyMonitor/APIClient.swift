@@ -11,8 +11,7 @@ final class LiveMonitoringAPI: MonitoringAPI {
 
     init(session: URLSession = .shared) {
         self.session = session
-        self.decoder = JSONDecoder()
-        self.decoder.dateDecodingStrategy = .iso8601
+        self.decoder = JSONDecoder.blueSkyDecoder()
     }
 
     func fetchSummary() async throws -> MonitorSummaryData {

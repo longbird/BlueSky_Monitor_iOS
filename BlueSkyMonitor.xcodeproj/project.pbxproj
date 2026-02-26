@@ -10,6 +10,7 @@
 		292D5AABDA1AB7F5A070EFFD /* MonitorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */; };
 		37851218398AEAD044C42589 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C0ED969BC47AE40487844E /* Config.swift */; };
 		42C3FF3C439678AFAA04D1FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3CECD749CEB631ED8A0A7 /* ContentView.swift */; };
+		6302577B934537123A5102DA /* JSONDecoder+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */; };
 		6D6423241D7D93D58FB70E20 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */; };
 		77CE2652F3682AF935B8A57A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CA6BFDB7FE6EE2ED90A3DD /* LoginView.swift */; };
 		8AFE5AB64412B082E5548EEE /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDAB23259F07E7692CDF62 /* TokenStore.swift */; };
@@ -36,6 +37,7 @@
 		786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorDetailView.swift; sourceTree = "<group>"; };
 		970D49DE3AF19CA46BE0E44E /* MonitoringDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringDetailViewModel.swift; sourceTree = "<group>"; };
 		9F9EE4E1B24DDCC6482923B7 /* BlueSkyMonitorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueSkyMonitorApp.swift; sourceTree = "<group>"; };
+		AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+Date.swift"; sourceTree = "<group>"; };
 		C77C1229C3A517B7656A01D9 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		D767BC8D348D8581FF4E2BFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D9DE5B73137437873DF60E6B /* BlueSkyMonitor.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlueSkyMonitor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,6 +82,7 @@
 				04C0ED969BC47AE40487844E /* Config.swift */,
 				28D3CECD749CEB631ED8A0A7 /* ContentView.swift */,
 				D767BC8D348D8581FF4E2BFA /* Info.plist */,
+				AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */,
 				4815A4E736C6EBEB0EA44894 /* Models.swift */,
 				970D49DE3AF19CA46BE0E44E /* MonitoringDetailViewModel.swift */,
 				283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */,
@@ -149,6 +152,7 @@
 				F3E2CF2AFF8023A7A8F6AA21 /* BlueSkyMonitorApp.swift in Sources */,
 				37851218398AEAD044C42589 /* Config.swift in Sources */,
 				42C3FF3C439678AFAA04D1FC /* ContentView.swift in Sources */,
+				6302577B934537123A5102DA /* JSONDecoder+Date.swift in Sources */,
 				77CE2652F3682AF935B8A57A /* LoginView.swift in Sources */,
 				E274AAED41661BE99047E2D6 /* Models.swift in Sources */,
 				292D5AABDA1AB7F5A070EFFD /* MonitorDetailView.swift in Sources */,

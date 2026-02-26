@@ -11,8 +11,7 @@ final class LiveAuthAPI: AuthAPI {
 
     init(session: URLSession = .shared) {
         self.session = session
-        self.decoder = JSONDecoder()
-        self.decoder.dateDecodingStrategy = .iso8601
+        self.decoder = JSONDecoder.blueSkyDecoder()
     }
 
     func login(mgrId: String, mgrPwd: String) async throws -> LoginResponseData {
