@@ -12,6 +12,7 @@
 		37851218398AEAD044C42589 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C0ED969BC47AE40487844E /* Config.swift */; };
 		42C3FF3C439678AFAA04D1FC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D3CECD749CEB631ED8A0A7 /* ContentView.swift */; };
 		43E48B74CD935BD06B085C8C /* ChartSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5CD480EA2E37A4C58E507EA /* ChartSection.swift */; };
+		4AC1C4A4C7180BA1BE4DEA44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BB6F76911744303B1CEC03C /* Assets.xcassets */; };
 		6302577B934537123A5102DA /* JSONDecoder+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF501C0B719D6786FD79ABB0 /* JSONDecoder+Date.swift */; };
 		6D6423241D7D93D58FB70E20 /* MonitoringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */; };
 		6E4FBF5C55D342A7193EC970 /* MonitoringChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7737EAB5EE7A824600974420 /* MonitoringChartViewModel.swift */; };
@@ -35,6 +36,7 @@
 		01216E5F04AFDC55BDDD9093 /* PBXJWT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PBXJWT.swift; sourceTree = "<group>"; };
 		04C0ED969BC47AE40487844E /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		04CA6BFDB7FE6EE2ED90A3DD /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		0BB6F76911744303B1CEC03C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		14EDAB23259F07E7692CDF62 /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
 		206A458B2174B1B0F6F66D5E /* ChartLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLogView.swift; sourceTree = "<group>"; };
 		283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringViewModel.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				461DBD34971CA4EE652FFB0C /* APIClient.swift */,
+				0BB6F76911744303B1CEC03C /* Assets.xcassets */,
 				48DF0CC01E6AAD500BFDA706 /* AuthAPI.swift */,
 				C77C1229C3A517B7656A01D9 /* AuthModels.swift */,
 				E6FFCB2E113E972ACA10C0E2 /* AuthViewModel.swift */,
@@ -121,6 +124,7 @@
 			buildConfigurationList = B986588FBAC2E749D626CB2A /* Build configuration list for PBXNativeTarget "BlueSkyMonitor" */;
 			buildPhases = (
 				E7AE0BF11D8E3D13CC05876C /* Sources */,
+				BF8F3224F525B68C88720762 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -160,6 +164,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF8F3224F525B68C88720762 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AC1C4A4C7180BA1BE4DEA44 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E7AE0BF11D8E3D13CC05876C /* Sources */ = {
