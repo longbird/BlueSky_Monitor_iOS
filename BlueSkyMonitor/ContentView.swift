@@ -53,10 +53,12 @@ struct ContentView: View {
                         }
                     }
                 }
-                .task {
+                .task(id: tokenStore.accessToken) {
+                    guard tokenStore.accessToken != nil else { return }
                     await viewModel.load()
                 }
                 .refreshable {
+                    guard tokenStore.accessToken != nil else { return }
                     await viewModel.load()
                 }
             }
