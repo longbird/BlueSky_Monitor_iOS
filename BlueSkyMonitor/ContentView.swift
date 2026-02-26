@@ -231,6 +231,7 @@ struct ContentView: View {
         do {
             let ok = try await PBXCommandClient.sendCommand(
                 ip: item.ipPbxIp,
+                port: item.ipPbxPort,
                 callCenterCd: item.centerId,
                 command: action.command.cmdValue
             )
@@ -242,8 +243,12 @@ struct ContentView: View {
             } else {
                 resultMessage = action.command.failMessage
             }
+        } catch PBXCommandError.missingKey {
+            resultMessage = "PBX 인증키가 없습니다. Secrets/pbx_private_key.pem 파일을 확인해주세요."
+        } catch PBXCommandError.invalidURL {
+            resultMessage = "잘못된 PBX 주소입니다."
         } catch {
-            resultMessage = "요청에 실패했습니다."
+            resultMessage = "요청에 실패했습니다.\n대상: \(item.ipPbxIp)\n\(error.localizedDescription)"
         }
         showResultAlert = true
     }

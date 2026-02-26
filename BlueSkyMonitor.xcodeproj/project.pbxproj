@@ -24,6 +24,7 @@
 		A06932ED198886919E16D02C /* PBXJWT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01216E5F04AFDC55BDDD9093 /* PBXJWT.swift */; };
 		A74490471BA030F9A30D08FC /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DF0CC01E6AAD500BFDA706 /* AuthAPI.swift */; };
 		B282118C72C4E208E2303D3C /* PBXCommandClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBD951328BA496FD772284A /* PBXCommandClient.swift */; };
+		B674F983F33872E58644EC14 /* pbx_private_key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 639ED102EE30AB771761D22D /* pbx_private_key.pem */; };
 		C75907205F76B6F983A5DBAF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FFCB2E113E972ACA10C0E2 /* AuthViewModel.swift */; };
 		C93F207B0E7EC2BF9DF448B9 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461DBD34971CA4EE652FFB0C /* APIClient.swift */; };
 		DAB801F8C2F7A1E16496D001 /* MonitorRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6EEB31D7044D563D4684EF /* MonitorRowView.swift */; };
@@ -44,6 +45,7 @@
 		461DBD34971CA4EE652FFB0C /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		4815A4E736C6EBEB0EA44894 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		48DF0CC01E6AAD500BFDA706 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
+		639ED102EE30AB771761D22D /* pbx_private_key.pem */ = {isa = PBXFileReference; path = pbx_private_key.pem; sourceTree = "<group>"; };
 		6B6EEB31D7044D563D4684EF /* MonitorRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorRowView.swift; sourceTree = "<group>"; };
 		7737EAB5EE7A824600974420 /* MonitoringChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringChartViewModel.swift; sourceTree = "<group>"; };
 		786C03F8A0E7C2E5A8C7EF6B /* MonitorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorDetailView.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				7737EAB5EE7A824600974420 /* MonitoringChartViewModel.swift */,
 				970D49DE3AF19CA46BE0E44E /* MonitoringDetailViewModel.swift */,
 				283899D78C7E41A361CEE2D4 /* MonitoringViewModel.swift */,
+				639ED102EE30AB771761D22D /* pbx_private_key.pem */,
 				9EBD951328BA496FD772284A /* PBXCommandClient.swift */,
 				01216E5F04AFDC55BDDD9093 /* PBXJWT.swift */,
 				14EDAB23259F07E7692CDF62 /* TokenStore.swift */,
@@ -171,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AC1C4A4C7180BA1BE4DEA44 /* Assets.xcassets in Resources */,
+				B674F983F33872E58644EC14 /* pbx_private_key.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
