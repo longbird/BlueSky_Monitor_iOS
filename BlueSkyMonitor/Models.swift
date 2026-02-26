@@ -12,6 +12,11 @@ struct MonitorSummaryData: Codable {
     let items: [MonitorSummaryItem]
 }
 
+struct CenterInfo: Codable {
+    let centerId: String
+    let centerName: String
+}
+
 struct MonitorSummaryItem: Codable, Identifiable {
     var id: String { centerId }
     let centerId: String
