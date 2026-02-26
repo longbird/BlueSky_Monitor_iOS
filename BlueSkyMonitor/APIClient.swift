@@ -38,7 +38,7 @@ final class LiveMonitoringAPI: MonitoringAPI {
     private func makeRequest(url: URL) throws -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        if let token = AppConfig.token {
+        if let token = TokenStore.shared.accessToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         return request
