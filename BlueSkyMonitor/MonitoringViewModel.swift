@@ -8,6 +8,7 @@ final class MonitoringViewModel: ObservableObject {
     @Published var centerSearchText: String = ""
     @Published var chartSeries: [String: [ChartPoint]] = [:]
     @Published var isLoading = false
+    @Published var isUserInteracting = false
     @Published var errorMessage: String?
 
     private var refreshTask: Task<Void, Never>?
@@ -85,8 +86,10 @@ final class MonitoringViewModel: ObservableObject {
         refreshTask = Task { [weak self] in
             guard let self else { return }
             while !Task.isCancelled {
-                await self.load()
-                await self.loadCharts()
+                if !self.isUserInteracting {
+                    await self.load()
+                    await self.loadCharts()
+                }
                 try? await Task.sleep(nanoseconds: UInt64(intervalSeconds * 1_000_000_000))
             }
         }

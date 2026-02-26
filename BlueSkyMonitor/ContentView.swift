@@ -15,6 +15,7 @@ struct ContentView: View {
                     VStack(spacing: 12) {
                         TextField("센터명 또는 코드 검색", text: $viewModel.centerSearchText)
                             .textFieldStyle(.roundedBorder)
+                            .onTapGesture { viewModel.isUserInteracting = true }
 
                         Picker("센터", selection: $viewModel.selectedCenterId) {
                             ForEach(viewModel.filteredCenters, id: \.centerId) { center in
@@ -23,6 +24,7 @@ struct ContentView: View {
                         }
                         .pickerStyle(.menu)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .onTapGesture { viewModel.isUserInteracting = true }
 
                         ZStack {
                             if viewModel.items.isEmpty && viewModel.isLoading {
@@ -80,6 +82,7 @@ struct ContentView: View {
                     viewModel.startAutoRefresh(intervalSeconds: 3.0)
                 }
                 .onChange(of: viewModel.selectedCenterId) { _ in
+                    viewModel.isUserInteracting = false
                     Task {
                         await viewModel.load()
                         await viewModel.loadCharts()
@@ -92,6 +95,9 @@ struct ContentView: View {
                 }
                 .onDisappear {
                     viewModel.stopAutoRefresh()
+                }
+                .onSubmit(of: .text) {
+                    viewModel.isUserInteracting = false
                 }
             }
         }
