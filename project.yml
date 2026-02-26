@@ -1,0 +1,24 @@
+name: BlueSkyMonitor
+options:
+  bundleIdPrefix: com.bluesky
+  deploymentTarget:
+    iOS: "15.0"
+targets:
+  BlueSkyMonitor:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: BlueSkyMonitor
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bluesky.BlueSkyMonitor
+    info:
+      path: BlueSkyMonitor/Info.plist
+      properties:
+        CFBundleName: BlueSkyMonitor
+        CFBundleDisplayName: BlueSkyMonitor
+        UILaunchScreen:
+          UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
