@@ -15,31 +15,16 @@ final class LiveMonitoringAPI: MonitoringAPI {
     }
 
     func fetchSummary() async throws -> MonitorSummaryData {
-        let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/centers")
+        let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/summary")
         let request = try makeRequest(url: url)
         let (data, response) = try await session.data(for: request)
         logResponse(label: "summary", response: response, data: data)
-        let wrapped = try decoder.decode(APIResponse<[CenterInfo]>.self, from: data)
-        guard wrapped.success, let centers = wrapped.data else {
+        let wrapped = try decoder.decode(APIResponse<MonitorSummaryData>.self, from: data)
+        guard wrapped.success, let payload = wrapped.data else {
             let message = wrapped.message ?? "목록 불러오기 실패"
             throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
         }
-        let items = centers.map {
-            MonitorSummaryItem(
-                centerId: $0.centerId,
-                centerName: $0.centerName,
-                connect: false,
-                sysCpu: 0,
-                sysMem: 0,
-                storageUsedPercent: 0,
-                netRxBytes: 0,
-                netTxBytes: 0,
-                ipPbxIp: "",
-                ipPbxPort: 0,
-                status: .unused
-            )
-        }
-        return MonitorSummaryData(timestamp: Date(), items: items)
+        return payload
     }
 
     func fetchDetail(centerId: String) async throws -> MonitorDetailData {
