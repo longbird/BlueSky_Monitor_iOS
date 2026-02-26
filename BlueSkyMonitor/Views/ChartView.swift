@@ -7,10 +7,12 @@ struct MultiLineChartView: View {
         let color: Color
         let points: [ChartValuePoint]
         let scale: @Sendable (Double) -> Double
+        let yMax: Double
     }
 
     let series: [Series]
     let windowSeconds: TimeInterval
+    let maxPoints: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -19,8 +21,15 @@ struct MultiLineChartView: View {
                     if let latest = latestTimestamp {
                         let windowStart = latest.addingTimeInterval(-windowSeconds)
                         ForEach(series) { item in
-                            LineShape(points: item.points, scale: item.scale, windowStart: windowStart, windowSeconds: windowSeconds)
-                                .stroke(item.color, lineWidth: 2)
+                            LineShape(
+                                points: item.points,
+                                scale: item.scale,
+                                windowStart: windowStart,
+                                windowSeconds: windowSeconds,
+                                maxPoints: maxPoints,
+                                yMax: item.yMax
+                            )
+                            .stroke(item.color, lineWidth: 2)
                         }
                     }
                 }
@@ -57,17 +66,23 @@ private struct LineShape: Shape {
     let scale: @Sendable (Double) -> Double
     let windowStart: Date
     let windowSeconds: TimeInterval
+    let maxPoints: Int
+    let yMax: Double
 
     func path(in rect: CGRect) -> Path {
-        let filtered = points
+        var filtered = points
             .filter { $0.t >= windowStart }
             .sorted { $0.t < $1.t }
 
         guard filtered.count > 1 else { return Path() }
 
-        let values = filtered.map { scale($0.v) }
-        let minV = values.min() ?? 0
-        let maxV = values.max() ?? 1
+        if maxPoints > 0, filtered.count > maxPoints {
+            let strideValue = max(1, filtered.count / maxPoints)
+            filtered = stride(from: 0, to: filtered.count, by: strideValue).map { filtered[$0] }
+        }
+
+        let minV = 0.0
+        let maxV = max(yMax, minV + 0.0001)
         let range = max(maxV - minV, 0.0001)
 
         func yPosition(_ value: Double) -> CGFloat {
