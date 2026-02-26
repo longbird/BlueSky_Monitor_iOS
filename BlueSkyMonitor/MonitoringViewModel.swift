@@ -17,10 +17,13 @@ final class MonitoringViewModel: ObservableObject {
         defer { isLoading = false }
         errorMessage = nil
 
+        NSLog("[MonitoringVM] load start")
         do {
             let data = try await api.fetchSummary()
             items = data.items
+            NSLog("[MonitoringVM] load success count=%d", items.count)
         } catch {
+            NSLog("[MonitoringVM] load error=%@", String(describing: error))
             errorMessage = error.localizedDescription
         }
     }

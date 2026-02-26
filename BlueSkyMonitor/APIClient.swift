@@ -17,9 +17,13 @@ final class LiveMonitoringAPI: MonitoringAPI {
     func fetchSummary() async throws -> MonitorSummaryData {
         let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/summary")
         let request = try makeRequest(url: url)
-        let (data, _) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        logResponse(label: "summary", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<MonitorSummaryData>.self, from: data)
-        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "목록 불러오기 실패"
+            throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
         return payload
     }
 
@@ -28,9 +32,13 @@ final class LiveMonitoringAPI: MonitoringAPI {
         components?.queryItems = [URLQueryItem(name: "centerId", value: centerId)]
         guard let url = components?.url else { throw URLError(.badURL) }
         let request = try makeRequest(url: url)
-        let (data, _) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        logResponse(label: "detail", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<MonitorDetailData>.self, from: data)
-        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "상세 불러오기 실패"
+            throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
         return payload
     }
 
@@ -41,6 +49,12 @@ final class LiveMonitoringAPI: MonitoringAPI {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         return request
+    }
+
+    private func logResponse(label: String, response: URLResponse, data: Data) {
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+        let body = String(data: data, encoding: .utf8) ?? "<non-utf8 body>"
+        NSLog("[MonitoringAPI] %@ status=%d body=%@", label, statusCode, body)
     }
 }
 
