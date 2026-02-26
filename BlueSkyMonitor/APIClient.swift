@@ -1,12 +1,8 @@
 import Foundation
 
 protocol MonitoringAPI {
-    func fetchSummary() async throws -> MonitorSummaryResponse
-    func fetchDetail(centerId: String) async throws -> MonitorDetailResponse
-}
-
-struct APIConfig {
-    static let baseURL = URL(string: "https://your-api.domain/api/v1")!
+    func fetchSummary() async throws -> MonitorSummaryData
+    func fetchDetail(centerId: String) async throws -> MonitorDetailData
 }
 
 final class LiveMonitoringAPI: MonitoringAPI {
@@ -19,38 +15,53 @@ final class LiveMonitoringAPI: MonitoringAPI {
         self.decoder.dateDecodingStrategy = .iso8601
     }
 
-    func fetchSummary() async throws -> MonitorSummaryResponse {
-        let url = APIConfig.baseURL.appendingPathComponent("monitor/summary")
-        let (data, _) = try await session.data(from: url)
-        return try decoder.decode(MonitorSummaryResponse.self, from: data)
+    func fetchSummary() async throws -> MonitorSummaryData {
+        let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/summary")
+        let request = try makeRequest(url: url)
+        let (data, _) = try await session.data(for: request)
+        let wrapped = try decoder.decode(APIResponse<MonitorSummaryData>.self, from: data)
+        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        return payload
     }
 
-    func fetchDetail(centerId: String) async throws -> MonitorDetailResponse {
-        var components = URLComponents(url: APIConfig.baseURL.appendingPathComponent("monitor/detail"), resolvingAgainstBaseURL: false)
+    func fetchDetail(centerId: String) async throws -> MonitorDetailData {
+        var components = URLComponents(url: AppConfig.baseURL.appendingPathComponent("api/v1/monitor/detail"), resolvingAgainstBaseURL: false)
         components?.queryItems = [URLQueryItem(name: "centerId", value: centerId)]
         guard let url = components?.url else { throw URLError(.badURL) }
-        let (data, _) = try await session.data(from: url)
-        return try decoder.decode(MonitorDetailResponse.self, from: data)
+        let request = try makeRequest(url: url)
+        let (data, _) = try await session.data(for: request)
+        let wrapped = try decoder.decode(APIResponse<MonitorDetailData>.self, from: data)
+        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        return payload
+    }
+
+    private func makeRequest(url: URL) throws -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        if let token = AppConfig.token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        return request
     }
 }
 
 final class MockMonitoringAPI: MonitoringAPI {
-    func fetchSummary() async throws -> MonitorSummaryResponse {
-        return MonitorSummaryResponse(
+    func fetchSummary() async throws -> MonitorSummaryData {
+        return MonitorSummaryData(
             timestamp: Date(),
             items: [
-                MonitorSummaryItem(centerId: "01", centerName: "서울센터", connect: true, sysCpu: 12.3, sysMem: 45.8, storageUsedPercent: 71.2, netRxBytes: 123_456_789, netTxBytes: 98_765_432, ipPbxIp: "10.0.0.12", status: .good),
-                MonitorSummaryItem(centerId: "02", centerName: "부산센터", connect: false, sysCpu: 0.0, sysMem: 0.0, storageUsedPercent: 0.0, netRxBytes: 0, netTxBytes: 0, ipPbxIp: "10.0.1.12", status: .offline)
+                MonitorSummaryItem(centerId: "C00001", centerName: "(주)아이콘소프트", connect: true, sysCpu: 12.3, sysMem: 45.8, storageUsedPercent: 71.2, netRxBytes: 123_456_789, netTxBytes: 98_765_432, ipPbxIp: "10.0.0.12", ipPbxPort: 5060, status: .good),
+                MonitorSummaryItem(centerId: "C00002", centerName: "콜밸런싱콜센터1", connect: false, sysCpu: 0.0, sysMem: 0.0, storageUsedPercent: 0.0, netRxBytes: 0, netTxBytes: 0, ipPbxIp: "10.0.1.12", ipPbxPort: 5060, status: .offline)
             ]
         )
     }
 
-    func fetchDetail(centerId: String) async throws -> MonitorDetailResponse {
-        return MonitorDetailResponse(
+    func fetchDetail(centerId: String) async throws -> MonitorDetailData {
+        return MonitorDetailData(
             centerId: centerId,
-            centerName: centerId == "01" ? "서울센터" : "부산센터",
-            servers: [
-                MonitorServer(serverId: "cmd", host: "10.0.0.10", port: 1234, status: .good, cpu: 18.2, mem: 62.1, disk: 80.4, rxBps: 123_000, txBps: 54_000, lastUpdated: Date())
+            records: [
+                MonitorDetailRecord(seq: 1, centerId: centerId, cpu: 15.1, mem: 62.3, disk: 80.4, rxBytes: 123_456, txBytes: 654_321),
+                MonitorDetailRecord(seq: 2, centerId: centerId, cpu: 20.5, mem: 58.2, disk: 81.0, rxBytes: 223_456, txBytes: 754_321)
             ]
         )
     }

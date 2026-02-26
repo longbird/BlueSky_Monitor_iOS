@@ -1,14 +1,16 @@
 import Foundation
 
 @MainActor
-final class MonitoringViewModel: ObservableObject {
-    @Published var items: [MonitorSummaryItem] = []
+final class MonitoringDetailViewModel: ObservableObject {
+    @Published var records: [MonitorDetailRecord] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
 
     private let api: MonitoringAPI
+    private let centerId: String
 
-    init(api: MonitoringAPI = MockMonitoringAPI()) {
+    init(centerId: String, api: MonitoringAPI = MockMonitoringAPI()) {
+        self.centerId = centerId
         self.api = api
     }
 
@@ -18,8 +20,8 @@ final class MonitoringViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let data = try await api.fetchSummary()
-            items = data.items
+            let data = try await api.fetchDetail(centerId: centerId)
+            records = data.records
         } catch {
             errorMessage = error.localizedDescription
         }

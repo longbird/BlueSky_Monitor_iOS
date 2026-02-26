@@ -1,6 +1,13 @@
 import Foundation
 
-struct MonitorSummaryResponse: Codable {
+struct APIResponse<T: Codable>: Codable {
+    let success: Bool
+    let message: String?
+    let data: T?
+    let timestamp: Date?
+}
+
+struct MonitorSummaryData: Codable {
     let timestamp: Date
     let items: [MonitorSummaryItem]
 }
@@ -16,27 +23,24 @@ struct MonitorSummaryItem: Codable, Identifiable {
     let netRxBytes: Int64
     let netTxBytes: Int64
     let ipPbxIp: String
+    let ipPbxPort: Int
     let status: MonitorStatus
 }
 
-struct MonitorDetailResponse: Codable {
+struct MonitorDetailData: Codable {
     let centerId: String
-    let centerName: String
-    let servers: [MonitorServer]
+    let records: [MonitorDetailRecord]
 }
 
-struct MonitorServer: Codable, Identifiable {
-    var id: String { serverId + host + String(port) }
-    let serverId: String
-    let host: String
-    let port: Int
-    let status: MonitorStatus
+struct MonitorDetailRecord: Codable, Identifiable {
+    var id: Int { seq }
+    let seq: Int
+    let centerId: String
     let cpu: Double
     let mem: Double
     let disk: Double
-    let rxBps: Int64
-    let txBps: Int64
-    let lastUpdated: Date
+    let rxBytes: Int64
+    let txBytes: Int64
 }
 
 enum MonitorStatus: String, Codable {
