@@ -13,8 +13,11 @@ struct ContentView: View {
             } else {
                 NavigationView {
                     VStack(spacing: 12) {
+                        TextField("센터명 또는 코드 검색", text: $viewModel.centerSearchText)
+                            .textFieldStyle(.roundedBorder)
+
                         Picker("센터", selection: $viewModel.selectedCenterId) {
-                            ForEach(viewModel.centers, id: \.centerId) { center in
+                            ForEach(viewModel.filteredCenters, id: \.centerId) { center in
                                 Text(center.centerName).tag(center.centerId)
                             }
                         }

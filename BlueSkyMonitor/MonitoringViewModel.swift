@@ -5,6 +5,7 @@ final class MonitoringViewModel: ObservableObject {
     @Published var items: [MonitorSummaryItem] = []
     @Published var centers: [CenterInfo] = []
     @Published var selectedCenterId: String = ""
+    @Published var centerSearchText: String = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -20,6 +21,14 @@ final class MonitoringViewModel: ObservableObject {
             centers = [CenterInfo(centerId: "", centerName: "전체")] + list.filter { !$0.centerId.isEmpty }
         } catch {
             NSLog("[MonitoringVM] centers error=%@", String(describing: error))
+        }
+    }
+
+    var filteredCenters: [CenterInfo] {
+        let query = centerSearchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !query.isEmpty else { return centers }
+        return centers.filter {
+            $0.centerId.lowercased().contains(query) || $0.centerName.lowercased().contains(query)
         }
     }
 
