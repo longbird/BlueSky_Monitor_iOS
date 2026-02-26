@@ -1,7 +1,8 @@
 import Foundation
 
 protocol MonitoringAPI {
-    func fetchSummary() async throws -> MonitorSummaryData
+    func fetchSummary(centerId: String?) async throws -> MonitorSummaryData
+    func fetchCenters() async throws -> [CenterInfo]
     func fetchDetail(centerId: String) async throws -> MonitorDetailData
 }
 
@@ -14,14 +15,31 @@ final class LiveMonitoringAPI: MonitoringAPI {
         self.decoder = JSONDecoder.blueSkyDecoder()
     }
 
-    func fetchSummary() async throws -> MonitorSummaryData {
-        let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/summary")
+    func fetchSummary(centerId: String? = nil) async throws -> MonitorSummaryData {
+        var components = URLComponents(url: AppConfig.baseURL.appendingPathComponent("api/v1/monitor/summary"), resolvingAgainstBaseURL: false)
+        if let centerId, !centerId.isEmpty {
+            components?.queryItems = [URLQueryItem(name: "centerId", value: centerId)]
+        }
+        guard let url = components?.url else { throw URLError(.badURL) }
         let request = try makeRequest(url: url)
         let (data, response) = try await session.data(for: request)
         logResponse(label: "summary", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<MonitorSummaryData>.self, from: data)
         guard wrapped.success, let payload = wrapped.data else {
             let message = wrapped.message ?? "목록 불러오기 실패"
+            throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
+        return payload
+    }
+
+    func fetchCenters() async throws -> [CenterInfo] {
+        let url = AppConfig.baseURL.appendingPathComponent("api/v1/monitor/centers")
+        let request = try makeRequest(url: url)
+        let (data, response) = try await session.data(for: request)
+        logResponse(label: "centers", response: response, data: data)
+        let wrapped = try decoder.decode(APIResponse<[CenterInfo]>.self, from: data)
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "센터 목록 불러오기 실패"
             throw NSError(domain: "MonitoringAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
         }
         return payload
@@ -59,14 +77,21 @@ final class LiveMonitoringAPI: MonitoringAPI {
 }
 
 final class MockMonitoringAPI: MonitoringAPI {
-    func fetchSummary() async throws -> MonitorSummaryData {
-        return MonitorSummaryData(
-            timestamp: Date(),
-            items: [
-                MonitorSummaryItem(centerId: "C00001", centerName: "(주)아이콘소프트", connect: true, sysCpu: 12.3, sysMem: 45.8, storageUsedPercent: 71.2, netRxBytes: 123_456_789, netTxBytes: 98_765_432, ipPbxIp: "10.0.0.12", ipPbxPort: 5060, status: .good),
-                MonitorSummaryItem(centerId: "C00002", centerName: "콜밸런싱콜센터1", connect: false, sysCpu: 0.0, sysMem: 0.0, storageUsedPercent: 0.0, netRxBytes: 0, netTxBytes: 0, ipPbxIp: "10.0.1.12", ipPbxPort: 5060, status: .offline)
-            ]
-        )
+    func fetchSummary(centerId: String? = nil) async throws -> MonitorSummaryData {
+        let all = [
+            MonitorSummaryItem(centerId: "C00001", centerName: "(주)아이콘소프트", connect: true, sysCpu: 12.3, sysMem: 45.8, storageUsedPercent: 71.2, netRxBytes: 123_456_789, netTxBytes: 98_765_432, ipPbxIp: "10.0.0.12", ipPbxPort: 5060, status: .good),
+            MonitorSummaryItem(centerId: "C00002", centerName: "콜밸런싱콜센터1", connect: false, sysCpu: 0.0, sysMem: 0.0, storageUsedPercent: 0.0, netRxBytes: 0, netTxBytes: 0, ipPbxIp: "10.0.1.12", ipPbxPort: 5060, status: .offline)
+        ]
+        let items = centerId == nil || centerId?.isEmpty == true ? all : all.filter { $0.centerId == centerId }
+        return MonitorSummaryData(timestamp: Date(), items: items)
+    }
+
+    func fetchCenters() async throws -> [CenterInfo] {
+        return [
+            CenterInfo(centerId: "", centerName: "전체"),
+            CenterInfo(centerId: "C00001", centerName: "(주)아이콘소프트"),
+            CenterInfo(centerId: "C00002", centerName: "콜밸런싱콜센터1")
+        ]
     }
 
     func fetchDetail(centerId: String) async throws -> MonitorDetailData {

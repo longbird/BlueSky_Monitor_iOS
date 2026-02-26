@@ -12,40 +12,51 @@ struct ContentView: View {
                 LoginView()
             } else {
                 NavigationView {
-                    ZStack {
-                        if viewModel.items.isEmpty && viewModel.isLoading {
-                            ProgressView("불러오는 중...")
-                        } else {
-                            ScrollView {
-                                LazyVStack(spacing: 12) {
-                                    ForEach(viewModel.items) { item in
-                                        NavigationLink(destination: MonitorDetailView(item: item)) {
-                                            MonitorRowView(item: item)
+                    VStack(spacing: 12) {
+                        Picker("센터", selection: $viewModel.selectedCenterId) {
+                            ForEach(viewModel.centers, id: \.centerId) { center in
+                                Text(center.centerName).tag(center.centerId)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        ZStack {
+                            if viewModel.items.isEmpty && viewModel.isLoading {
+                                ProgressView("불러오는 중...")
+                            } else {
+                                ScrollView {
+                                    LazyVStack(spacing: 12) {
+                                        ForEach(viewModel.items) { item in
+                                            NavigationLink(destination: MonitorDetailView(item: item)) {
+                                                MonitorRowView(item: item)
+                                            }
+                                            .buttonStyle(.plain)
                                         }
-                                        .buttonStyle(.plain)
+                                    }
+                                    .padding()
+                                }
+                            }
+
+                            if let message = viewModel.errorMessage {
+                                VStack(spacing: 8) {
+                                    Text("오류 발생")
+                                        .font(.headline)
+                                    Text(message)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Button("다시 시도") {
+                                        Task { await viewModel.load() }
                                     }
                                 }
                                 .padding()
+                                .background(Color(.systemBackground))
+                                .cornerRadius(12)
+                                .shadow(radius: 6)
                             }
-                        }
-
-                        if let message = viewModel.errorMessage {
-                            VStack(spacing: 8) {
-                                Text("오류 발생")
-                                    .font(.headline)
-                                Text(message)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Button("다시 시도") {
-                                    Task { await viewModel.load() }
-                                }
-                            }
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(12)
-                            .shadow(radius: 6)
                         }
                     }
+                    .padding(.horizontal)
                     .navigationTitle("BlueSky Monitor")
                     .toolbar {
                         Button("로그아웃") {
@@ -55,7 +66,11 @@ struct ContentView: View {
                 }
                 .task(id: tokenStore.accessToken) {
                     guard tokenStore.accessToken != nil else { return }
+                    await viewModel.loadCenters()
                     await viewModel.load()
+                }
+                .onChange(of: viewModel.selectedCenterId) { _ in
+                    Task { await viewModel.load() }
                 }
                 .refreshable {
                     guard tokenStore.accessToken != nil else { return }
