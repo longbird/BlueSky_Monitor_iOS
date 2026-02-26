@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoginView: View {
     @StateObject private var viewModel = AuthViewModel()
+    @State private var didAutoLogin = false
 
     var body: some View {
         NavigationView {
@@ -41,6 +42,14 @@ struct LoginView: View {
             }
             .padding()
             .navigationTitle("로그인")
+            .task {
+                guard !didAutoLogin else { return }
+                didAutoLogin = true
+                TokenStore.shared.clear()
+                viewModel.mgrId = "testadmin"
+                viewModel.mgrPwd = "1234"
+                await viewModel.login()
+            }
         }
     }
 }

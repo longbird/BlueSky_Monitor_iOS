@@ -21,7 +21,10 @@ final class LiveAuthAPI: AuthAPI {
         let (data, response) = try await session.data(for: request)
         logResponse(label: "login", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<LoginResponseData>.self, from: data)
-        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "로그인 실패"
+            throw NSError(domain: "AuthAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
         return payload
     }
 
@@ -32,7 +35,10 @@ final class LiveAuthAPI: AuthAPI {
         let (data, response) = try await session.data(for: request)
         logResponse(label: "refresh", response: response, data: data)
         let wrapped = try decoder.decode(APIResponse<LoginResponseData>.self, from: data)
-        guard let payload = wrapped.data else { throw URLError(.cannotParseResponse) }
+        guard wrapped.success, let payload = wrapped.data else {
+            let message = wrapped.message ?? "토큰 갱신 실패"
+            throw NSError(domain: "AuthAPI", code: -1, userInfo: [NSLocalizedDescriptionKey: message])
+        }
         return payload
     }
 
@@ -47,6 +53,6 @@ final class LiveAuthAPI: AuthAPI {
     private func logResponse(label: String, response: URLResponse, data: Data) {
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
         let body = String(data: data, encoding: .utf8) ?? "<non-utf8 body>"
-        print("[AuthAPI] \(label) status=\(statusCode) body=\(body)")
+        NSLog("[AuthAPI] %@ status=%d body=%@", label, statusCode, body)
     }
 }

@@ -25,10 +25,13 @@ final class AuthViewModel: ObservableObject {
         defer { isLoading = false }
         errorMessage = nil
 
+        NSLog("[AuthVM] login start id=%@", mgrId)
         do {
             let data = try await api.login(mgrId: mgrId, mgrPwd: mgrPwd)
             tokenStore.update(accessToken: data.accessToken, refreshToken: data.refreshToken)
+            NSLog("[AuthVM] login success")
         } catch {
+            NSLog("[AuthVM] login error=%@", String(describing: error))
             errorMessage = error.localizedDescription
         }
     }
