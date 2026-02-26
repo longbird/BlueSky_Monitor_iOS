@@ -38,11 +38,20 @@ struct MonitorDetailData: Codable {
 }
 
 struct ChartResponseData: Codable {
-    let metric: String
     let points: [ChartPoint]
 }
 
 struct ChartPoint: Codable {
+    let t: Date
+    let cpu: Double
+    let mem: Double
+    let disk: Double
+    let rx: Double
+    let tx: Double
+}
+
+struct ChartValuePoint: Identifiable {
+    let id = UUID()
     let t: Date
     let v: Double
 }

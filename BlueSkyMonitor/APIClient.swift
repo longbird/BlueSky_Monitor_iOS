@@ -4,7 +4,7 @@ protocol MonitoringAPI {
     func fetchSummary(centerId: String?) async throws -> MonitorSummaryData
     func fetchCenters() async throws -> [CenterInfo]
     func fetchDetail(centerId: String) async throws -> MonitorDetailData
-    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData
+    func fetchChart(centerId: String, minutes: Int?) async throws -> ChartResponseData
 }
 
 final class LiveMonitoringAPI: MonitoringAPI {
@@ -64,13 +64,13 @@ final class LiveMonitoringAPI: MonitoringAPI {
         return payload
     }
 
-    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData {
+    func fetchChart(centerId: String, minutes: Int? = nil) async throws -> ChartResponseData {
         var components = URLComponents(url: AppConfig.baseURL.appendingPathComponent("api/v1/monitor/chart"), resolvingAgainstBaseURL: false)
-        components?.queryItems = [
-            URLQueryItem(name: "centerId", value: centerId),
-            URLQueryItem(name: "metric", value: metric),
-            URLQueryItem(name: "range", value: range)
-        ]
+        var queryItems = [URLQueryItem(name: "centerId", value: centerId)]
+        if let minutes {
+            queryItems.append(URLQueryItem(name: "minutes", value: String(minutes)))
+        }
+        components?.queryItems = queryItems
         guard let url = components?.url else { throw URLError(.badURL) }
         let request = try makeRequest(url: url)
         logRequest(label: "chart", request: request)
@@ -134,10 +134,17 @@ final class MockMonitoringAPI: MonitoringAPI {
         )
     }
 
-    func fetchChart(centerId: String, metric: String, range: String) async throws -> ChartResponseData {
+    func fetchChart(centerId: String, minutes: Int? = nil) async throws -> ChartResponseData {
         let points = Array((0..<12).map { idx in
-            ChartPoint(t: Date().addingTimeInterval(Double(-idx) * 300), v: Double.random(in: 10...80))
+            ChartPoint(
+                t: Date().addingTimeInterval(Double(-idx) * 300),
+                cpu: Double.random(in: 10...80),
+                mem: Double.random(in: 10...80),
+                disk: Double.random(in: 10...80),
+                rx: Double.random(in: 10_000...200_000),
+                tx: Double.random(in: 10_000...200_000)
+            )
         }.reversed())
-        return ChartResponseData(metric: metric, points: points)
+        return ChartResponseData(points: points)
     }
 }

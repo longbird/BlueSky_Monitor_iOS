@@ -4,6 +4,7 @@ Secrets/
 # Xcode
 build/
 DerivedData/
+xcuserdata/
 *.xcuserdata/
 *.xcuserstate
 
