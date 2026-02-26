@@ -1,17 +1,51 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = MonitoringViewModel()
+
     var body: some View {
         NavigationView {
-            VStack(spacing: 16) {
-                Text("BlueSky Monitor")
-                    .font(.title)
-                    .bold()
-                Text("모니터링 앱 초기 화면")
-                    .foregroundColor(.secondary)
+            ZStack {
+                if viewModel.items.isEmpty && viewModel.isLoading {
+                    ProgressView("불러오는 중...")
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.items) { item in
+                                NavigationLink(destination: MonitorDetailView(item: item)) {
+                                    MonitorRowView(item: item)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding()
+                    }
+                }
+
+                if let message = viewModel.errorMessage {
+                    VStack(spacing: 8) {
+                        Text("오류 발생")
+                            .font(.headline)
+                        Text(message)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Button("다시 시도") {
+                            Task { await viewModel.load() }
+                        }
+                    }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                    .shadow(radius: 6)
+                }
             }
-            .padding()
-            .navigationTitle("Dashboard")
+            .navigationTitle("BlueSky Monitor")
+        }
+        .task {
+            await viewModel.load()
+        }
+        .refreshable {
+            await viewModel.load()
         }
     }
 }
